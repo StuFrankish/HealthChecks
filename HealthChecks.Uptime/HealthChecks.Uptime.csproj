@@ -3,8 +3,11 @@
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
+	<IsPackable>true</IsPackable>
     <ImplicitUsings>enable</ImplicitUsings>
     <OutputType>Library</OutputType>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Title>HealthChecks</Title>
   </PropertyGroup>
 
 </Project>
