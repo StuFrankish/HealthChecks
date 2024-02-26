@@ -1,16 +1,14 @@
-﻿using Microsoft.Extensions.DependencyInjection.Extensions;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace HealthChecks.Uptime;
 
 public static class ServiceCollectionExtension
 {
-    public static IServiceCollection AddApplicationUptimeHealthCheck(this IServiceCollection services)
+    public static IHealthChecksBuilder AddUptimeHealthCheck(this IHealthChecksBuilder builder)
     {
-        services.TryAddSingleton<StartupTimeHealthCheck>();
+        builder.Services.AddSingleton(implementationInstance: new StartupTimeHealthCheck(DateTime.Now));
+        builder.AddCheck<StartupTimeHealthCheck>(name: "startup_time");
 
-        services.AddHealthChecks()
-            .AddCheck<StartupTimeHealthCheck>(name: "startup_time");
-
-        return services;
+        return builder;
     }
 }

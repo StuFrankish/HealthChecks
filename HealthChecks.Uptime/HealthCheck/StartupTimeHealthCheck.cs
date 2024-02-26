@@ -4,7 +4,12 @@ namespace HealthChecks.Uptime;
 
 public sealed class StartupTimeHealthCheck : IHealthCheck
 {
-    private readonly DateTime _startupTime = DateTime.Now;
+    private readonly DateTime _startupTime;
+
+    public StartupTimeHealthCheck(DateTime startupTime)
+    {
+        _startupTime = startupTime;
+    }
 
     public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
     {
