@@ -8,6 +8,7 @@
     <OutputType>Library</OutputType>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>HealthChecks</Title>
+    <Version>1.0.2</Version>
   </PropertyGroup>
 
 </Project>
