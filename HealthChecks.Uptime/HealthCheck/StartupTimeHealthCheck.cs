@@ -13,7 +13,7 @@ public sealed class StartupTimeHealthCheck : IHealthCheck
 
     public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
     {
-        var uptime = DateTime.UtcNow - _startupTime;
+        var uptime = DateTime.Now - _startupTime;
         var data = new Dictionary<string, object>
         {
             { "Startup Time", _startupTime.ToString(format: "o") },
