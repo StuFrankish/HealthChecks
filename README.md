@@ -2,29 +2,51 @@
 [![CodeQL](https://github.com/StuFrankish/HealthChecks/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/StuFrankish/HealthChecks/actions/workflows/github-code-scanning/codeql)
 
 # HealthChecks
-A small repo to document and hold the odd custom IHealthCheck implementation as needed.
 
-Currently available healthchecks:
-- Healthchecks.Uptime
+This repository is dedicated to providing custom implementations of `IHealthCheck` for .NET applications, offering additional health monitoring capabilities beyond the default checks.
 
-## HealthChecks.Uptime
-The uptime health check extends the existing `IServiceCollection.AddHealthChecks()` functionality by adding a startup time and uptime counter to the list of entries in the health report.
+## Features
+
+- **Uptime Health Check**: Monitor the uptime of your application, adding startup time and uptime information to your health reports.
+
+## Getting Started
+
+### Prerequisites
+
+- .NET SDK (version requirement if applicable)
+- An existing .NET application to integrate the health checks into
 
 ### Installation
-Either through your editors Package Manager or your preferred method, following https://www.nuget.org/packages/HealthChecks.Uptime
 
-### Usage (using a `Startup.cs` sample)
+You can add the Uptime Health Check to your project via NuGet:
+```bash
+dotnet add package HealthChecks.Uptime
+```
+
+## Configuration
+### Adding to your services:
+In your Startup.cs or wherever you configure services, add the uptime health check:
+
 ```c#
 using HealthChecks.Uptime;
 
 public void ConfigureServices(IServiceCollection services)
 {
-   ... Rest of your code
+    // Your existing service configurations
 
-    // Add Healthchecks
     services.AddHealthChecks()
         .AddUptimeHealthCheck();
 }
+```
+
+### Setting up the endpoint
+Configure the health check endpoint in your application's request pipeline:
+```c#
+app.UseHealthChecks("/_health", new HealthCheckOptions
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse,
+    AllowCachingResponses = false
+});
 ```
 
 ### Sample Output
@@ -45,12 +67,4 @@ public void ConfigureServices(IServiceCollection services)
         }
     }
 }
-```
-Note, the above sample makes use of `AspNetCore.HealthChecks.UI.Client` and the following `.UseHealthChecks()` configuration.
-```c#
-app.UseHealthChecks(path: "/_health", options: new HealthCheckOptions
-{
-    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse,
-    AllowCachingResponses = false
-});
 ```
