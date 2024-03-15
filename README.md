@@ -41,7 +41,7 @@ public void ConfigureServices(IServiceCollection services)
 }
 ```
 
-### Setting up the endpoint
+### Setting up the endpoint (optional)
 Configure the health check endpoint in your application's request pipeline:
 ```c#
 app.UseHealthChecks("/_health", new HealthCheckOptions
@@ -50,8 +50,32 @@ app.UseHealthChecks("/_health", new HealthCheckOptions
     AllowCachingResponses = false
 });
 ```
+### Running the Health Check Report Manually
+You can create the Health Check report manually by getting an instance of the `HealthCheckService` and calling `CheckHealthAsyn()` as below;
+```c#
+// Where _provider is a local DI instance of `IServiceProvider`.
+var healthCheckService = _provider.GetService<HealthCheckService>();
 
-### Sample Output
+if (healthCheckService == null)
+{
+    // Optionally, return a meaningful response or handle the logic as required
+    return JsonSerializer.Serialize(new { Error = "HealthCheckService is not available." });
+}
+
+var response = await healthCheckService.CheckHealthAsync();
+
+var options = new JsonSerializerOptions
+{
+    WriteIndented = true, // For pretty-printing. Set to false in production for compact JSON.
+    PropertyNamingPolicy = JsonNamingPolicy.CamelCase, // Common convention for JSON property names.
+    IgnoreNullValues = true // Optional: depending on whether you want to include properties with null values.
+};
+
+string jsonReport = JsonSerializer.Serialize(response, options);
+```
+
+## Sample Output
+The below JSON sample is representative of the output from both the manual report and from endpoint.
 ```json
 {
     "status": "Healthy",
