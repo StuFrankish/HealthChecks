@@ -50,6 +50,10 @@ app.UseHealthChecks("/_health", new HealthCheckOptions
     AllowCachingResponses = false
 });
 ```
+> [!TIP]
+> Add the `AspNetCore.HealthChecks.UI.Client` package to make use of the `UIResponseWriter` class and give the `Status` property a user-friendly translation to text.
+
+
 ### Running the Health Check Report Manually
 You can create the Health Check report manually by getting an instance of the `HealthCheckService` and calling `CheckHealthAsyn()` as below;
 ```c#
