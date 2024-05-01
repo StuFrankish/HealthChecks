@@ -2,24 +2,29 @@
 
 namespace HealthChecks.Uptime;
 
-public sealed class StartupTimeHealthCheck : IHealthCheck
+/// <summary>
+/// Initializes a new instance of the <see cref="StartupTimeHealthCheck"/> class.
+/// </summary>
+/// <param name="startupTime">The startup time of the application.</param>
+public sealed class StartupTimeHealthCheck(DateTime startupTime) : IHealthCheck
 {
-    private readonly DateTime _startupTime;
+    private readonly DateTime _startupTime = startupTime;
 
-    public StartupTimeHealthCheck(DateTime startupTime)
-    {
-        _startupTime = startupTime;
-    }
-
+    /// <summary>
+    /// Checks the health of the application's startup time.
+    /// </summary>
+    /// <param name="context">The health check context.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A task representing the asynchronous health check operation.</returns>
     public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
     {
         var uptime = DateTime.Now - _startupTime;
         var data = new Dictionary<string, object>
         {
-            { "Startup Time", _startupTime.ToString(format: "o") },
-            { "Uptime", uptime.ToString() }
+            { Constants.Language.Data_StartupTime, _startupTime.ToString(format: "o") },
+            { Constants.Language.Data_Uptime, uptime.ToString() }
         };
 
-        return Task.FromResult(HealthCheckResult.Healthy(description: "Application has been running without issues.", data));
+        return Task.FromResult(HealthCheckResult.Healthy(description: Constants.Language.Data_HealthyDescription, data));
     }
 }
