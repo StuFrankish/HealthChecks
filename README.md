@@ -41,6 +41,22 @@ public void ConfigureServices(IServiceCollection services)
 }
 ```
 
+### NEW - HealthChecks now supports setting a degraded service threshold.
+By setting a threshold, the healthcheck status will return degraded until the configured amount of time in seconds has passed.
+```c#
+using HealthChecks.Uptime;
+
+public void ConfigureServices(IServiceCollection services)
+{
+    // Your existing service configurations
+
+    services.AddHealthChecks()
+        .AddUptimeHealthCheck((options) => {
+            options.DegradedThresholdInSeconds = 120;
+        });
+}
+```
+
 ### Setting up the endpoint (optional)
 Configure the health check endpoint in your application's request pipeline:
 ```c#
