@@ -1,4 +1,5 @@
 using HealthChecks.Uptime;
+using HealthChecks.Uptime.Options;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace HealthChecks.UnitTests;
@@ -10,13 +11,14 @@ public class TestSuite
 {
     private readonly DateTime _fixedStartupTime = new(2023, 1, 1);
     private readonly StartupTimeHealthCheck _healthCheckWithFixedTime;
+    private readonly UptimeHealthCheckOptions _healthCheckOptions = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TestSuite"/> class.
     /// </summary>
     public TestSuite()
     {
-        _healthCheckWithFixedTime = new StartupTimeHealthCheck(_fixedStartupTime);
+        _healthCheckWithFixedTime = new StartupTimeHealthCheck(_fixedStartupTime, _healthCheckOptions);
     }
 
     /// <summary>
@@ -30,7 +32,7 @@ public class TestSuite
     public async Task CheckHealthAsync_Should_ReturnHealthy(int hoursOffset)
     {
         // Arrange
-        var healthCheck = hoursOffset == 0 ? _healthCheckWithFixedTime : new StartupTimeHealthCheck(DateTime.Now.AddHours(hoursOffset));
+        var healthCheck = hoursOffset == 0 ? _healthCheckWithFixedTime : new StartupTimeHealthCheck(DateTime.Now.AddHours(hoursOffset), _healthCheckOptions);
 
         // Act
         var result = await healthCheck.CheckHealthAsync(new HealthCheckContext());
@@ -56,5 +58,36 @@ public class TestSuite
         Assert.True(data.ContainsKey("Startup Time"));
         Assert.True(data.ContainsKey("Uptime"));
         Assert.Equal(_fixedStartupTime.ToString("o"), data["Startup Time"].ToString());
+    }
+    /// <summary>
+    /// Tests the CheckHealthAsync method to ensure it returns a degraded status when DegradedThresholdInSeconds is set.
+    /// </summary>
+    /// <param name="hoursOffset">The number of hours offset from the startup time.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
+    [Theory]
+    [InlineData(0)] // At startup
+    [InlineData(-1)] // After 1 hour of uptime
+    public async Task CheckHealthAsync_Should_ReturnDegraded_WhenDegradedThresholdInSecondsIsSet(int hoursOffset)
+    {
+        // Arrange
+        var degradedThresholdInSeconds = 3600; // Set the degraded threshold to 1 hour
+        _healthCheckOptions.DegradedThresholdInSeconds = degradedThresholdInSeconds;
+
+        var healthCheck = new StartupTimeHealthCheck(DateTime.Now.AddHours(hoursOffset), _healthCheckOptions);
+
+        // Act
+        var result = await healthCheck.CheckHealthAsync(new HealthCheckContext());
+
+        // Assert
+        if (hoursOffset == 0)
+        {
+            Assert.Equal(HealthStatus.Degraded, result.Status);
+            Assert.Contains("Application is experiencing degraded service.", result.Description);
+        }
+        else
+        {
+            Assert.Equal(HealthStatus.Healthy, result.Status);
+            Assert.Contains("Application has been running without issues.", result.Description);
+        }
     }
 }
