@@ -15,7 +15,7 @@ This repository is dedicated to providing custom implementations of `IHealthChec
 ### Prerequisites
 
 - .NET SDK ≥ 8.0.2
-- Microsoft.Extensions.Diagnostics.HealthChecks ≥ 8.0.2
+- Microsoft.Extensions.Diagnostics.HealthChecks ≥ 8.0.7
 - An existing .NET application to integrate the health checks into
 
 ### Installation
