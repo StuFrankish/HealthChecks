@@ -1,6 +1,6 @@
 [![NuGet](https://img.shields.io/nuget/vpre/HealthChecks.Uptime.svg)](https://www.nuget.org/packages/HealthChecks.Uptime)
 [![.NET Build](https://github.com/StuFrankish/HealthChecks/actions/workflows/dotnet.yml/badge.svg)](https://github.com/StuFrankish/HealthChecks/actions/workflows/dotnet.yml)
-[![CodeQL](https://github.com/StuFrankish/HealthChecks/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/StuFrankish/HealthChecks/actions/workflows/github-code-scanning/codeql)
+[![CodeQL](https://github.com/StuFrankish/HealthChecks/actions/workflows/codeql.yml/badge.svg)](https://github.com/StuFrankish/HealthChecks/actions/workflows/codeql.yml)
 
 # HealthChecks
 
